@@ -60,25 +60,35 @@ def permutation2(s):
     key.append(s[50-1]);key.append(s[36-1]);key.append(s[29-1]);key.append(s[32-1]);
     return key
 
-print ">>此算法为根据16位十六进制初始密钥,求16轮子密钥。\n"
-#key=input(">>请输入初始密钥（例：0xfedcba9876543210)：")
-key=0xfedcba9876543210
 
-s=htob(key)
-print "初始密钥的二进制表示为:%s,长度为%d位\n"%(s,len(s))
-
-s=permutation1(s)
-print "进行初始置换1后%d位为:%s"%(len(s),s)
-
-once=[1,2,9,16]
-for i in range(1,17):
-    c=s[0:28]
-    d=s[28:56]
-    c=leftshift(c)
-    d=leftshift(d)
-    if i not in once:
+def deskey(key):
+    s=htob(key)
+    #print "初始密钥的二进制表示为:%s,长度为%d位\n"%(s,len(s))
+    
+    s=permutation1(s)
+    #print "进行初始置换1后%d位为:%s"%(len(s),s)
+    
+    out=[]
+    once=[1,2,9,16]
+    for i in range(1,17):
+        c=s[0:28]
+        d=s[28:56]
         c=leftshift(c)
         d=leftshift(d)
-    s=c+d
-    key=permutation2(s)
-    print "第%d轮%d位子密钥为:%s"%(i,len(key),key)
+        if i not in once:
+            c=leftshift(c)
+            d=leftshift(d)
+        s=c+d
+        key=permutation2(s)
+        #print "第%d轮%d位子密钥为:%s"%(i,len(key),key)
+        out.append(key)
+    return out
+
+print ">>此算法为根据16位十六进制初始密钥,求16轮子密钥。"
+#key=input(">>请输入初始密钥（例：0xfedcba9876543210)：")
+key=0xfedcba9876543210
+s=deskey(key)
+
+for i in range(0,16):
+    print "第%d轮%d位子密钥为:%s"%(i+1,len(s[i]),s[i])
+
