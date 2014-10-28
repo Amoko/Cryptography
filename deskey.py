@@ -84,11 +84,26 @@ def deskey(key):
         out.append(key)
     return out
 
+def tohex(s):
+    out=[]
+    for i in range(0,16):
+        key=0
+        for j in range(0,48):
+            if s[i][j]=='1':
+                key=key+2**(47-j)
+        key=hex(key)
+        key=key[2:14]
+        out.append(key)
+    return out
+    
+
 print ">>此算法为根据16位十六进制初始密钥,求16轮子密钥。"
 #key=input(">>请输入初始密钥（例：0xfedcba9876543210)：")
 key=0xfedcba9876543210
+
 s=deskey(key)
+h=tohex(s)
 
 for i in range(0,16):
     print "第%d轮%d位子密钥为:%s"%(i+1,len(s[i]),s[i])
-
+    print ">>%d位十六进制表示为:%s"%(len(h[i]),h[i])
